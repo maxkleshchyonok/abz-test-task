@@ -32,8 +32,10 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="max-w-[1168px]">
-        <h2>Working with GET request</h2>
+      <div className="max-w-[1168px] flex flex-col items-center">
+        <h2 className="text-[40px] text-black/[87%] py-10">
+          Working with GET request
+        </h2>
         <UserCards />
       </div>
     </div>
