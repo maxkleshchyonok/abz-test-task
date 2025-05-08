@@ -12,7 +12,7 @@ const UserCards = () => {
   const [page, setPage] = useState(1);
   const { data: usersData = [] } = useGetUsers({ page, count: 6 });
   const [users, setUsers] = useState([]);
-  console.log(usersData);
+
   useEffect(() => {
     if (!usersData || !usersData.users) {
       return;

@@ -2,6 +2,7 @@ import React from "react";
 
 import SignUpButton from "@/app/components/signUpButton/SignUpButton";
 import UserCards from "@/app/components/userCards/UserCards";
+import SignUp from "@/app/components/signUp/SignUp";
 
 const Home = () => {
   return (
@@ -37,6 +38,13 @@ const Home = () => {
           Working with GET request
         </h2>
         <UserCards />
+      </div>
+
+      <div className="max-w-[1168px] flex flex-col items-center justify-center pt-20">
+        <h2 className="text-[40px] text-black/[87%] py-10">
+          Working with POST request
+        </h2>
+        <SignUp />
       </div>
     </div>
   );

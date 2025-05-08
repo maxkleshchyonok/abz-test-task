@@ -123,3 +123,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+input:focus + label,
+input:not(:placeholder-shown) + label {
+  top: -2px;
+  font-size: 0.75rem;
+  color: #7e7e7e;
+}
+
+input::placeholder {
+  color: transparent;
+}

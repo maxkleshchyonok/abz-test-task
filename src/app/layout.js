@@ -19,7 +19,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} bg-[#F8F8F8] antialiased`}>
+      <body className={`${nunito.variable} bg-[#F8F8F8] pb-20 antialiased`}>
         <ReactQueryProvider>
           <Header />
           <div>{children}</div>
