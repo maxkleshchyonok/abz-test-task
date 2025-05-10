@@ -2,6 +2,12 @@
 
 ## Done by Maksim Kleshchenok
 
+## ENV file for review
+
+- NEXT_PUBLIC_BASE_URL=http://127.0.0.1:3000/
+
+* API_ENDPOINT_URL=https://frontend-test-assignment-api.abz.agency/api/v1
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
