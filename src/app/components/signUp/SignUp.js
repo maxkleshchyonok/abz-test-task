@@ -1,7 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
+
+import Image from "next/image";
+
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { useGetPositions, useSignUp } from "@/app/hooks";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -13,75 +16,70 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { signUpSchema } from "@/lib/schema";
+import { Loader } from "@/app/icons";
+import SignUpButton from "../signUpButton/SignUpButton";
+import successImage from "/public/success-image.png";
 
-const signUpSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Username is required.")
-    .max(60, "Username should contain 2-60 characters."),
-  email: z
-    .string()
-    .min(6, "Email is required")
-    .regex(
-      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      "Email must be a valid email according to RFC2822."
-    ),
-  phone: z
-    .string()
-    .regex(/^\+380\d{9}$/, "Number should start with code of Ukraine +380."),
-  position: z
-    .enum(
-      ["Frontend developer", "Backend developer", "Designer", "QA"],
-      "Position is required"
-    )
-    .default("Frontend developer"),
-  profilePicture: z
-    .any()
-    .refine((file) => {
-      if (!file) return false;
-      return file instanceof File;
-    }, "Profile picture is required.")
-    .refine((file) => {
-      if (!file) return true;
-      const validTypes = ["image/jpeg", "image/jpg"];
-      return validTypes.includes(file.type);
-    }, "Invalid file type. Only JPEG/JPG is allowed.")
-    .refine((file) => {
-      if (!file) return true;
-      return file.size <= 5 * 1024 * 1024;
-    }, "File size must not exceed 5MB.")
-    .refine(async (file) => {
-      if (!file) return true;
-      const image = await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve({ width: img.width, height: img.height });
-        img.onerror = reject;
-        img.src = URL.createObjectURL(file);
-      });
+const SignUp = ({ onUserCreated }) => {
+  const { data: positionsData, isLoading } = useGetPositions();
+  const { signUp, isPending, isSuccess } = useSignUp();
 
-      return image.width >= 70 && image.height >= 70;
-    }, "Minimum size is 70x70px."),
-});
-
-const SignUp = () => {
   const form = useForm({
     resolver: zodResolver(signUpSchema),
     mode: "all",
+    defaultValues: {
+      position: positionsData?.positions[0]?.id || "",
+    },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-    // Handle form submission (e.g., send data to the server)
+  useEffect(() => {
+    if (positionsData?.positions?.length) {
+      form.setValue("position_id", positionsData.positions[0].id);
+    }
+  }, [positionsData, form]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      onUserCreated();
+    }
+  }, [isSuccess]);
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("email", data.email);
+      formData.append("phone", data.phone);
+      formData.append("position_id", data.position_id);
+      formData.append("photo", data.photo);
+
+      await signUp(formData);
+    } catch (error) {
+      console.error("Error during sign-up:", error);
+    }
   };
 
-  return (
+  return isSuccess ? (
+    <div className="w-full flex flex-col justify-center items-center gap-10">
+      <h2 className="text-[40px]/[40px] text-black/[87] text-center">
+        User successfully registered
+      </h2>
+
+      <Image
+        width={328}
+        height={290}
+        src={successImage}
+        alt="User created successfully"
+      />
+    </div>
+  ) : (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col items-center space-y-8"
+        className="w-full flex flex-col items-center space-y-12.5 mt-4"
       >
         <FormField
           control={form.control}
@@ -101,6 +99,7 @@ const SignUp = () => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
@@ -119,6 +118,7 @@ const SignUp = () => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="phone"
@@ -138,56 +138,52 @@ const SignUp = () => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="position"
+          name="position_id"
           render={({ field }) => (
-            <FormItem className="w-[380px] justify-start">
+            <FormItem className=" w-[90%] max-w-[380px] justify-start -mt-6">
               <FormLabel
                 className={"font-normal text-base/[26px] text-black/[87]"}
               >
                 Select your position
               </FormLabel>
-              <RadioGroup
-                value={field.value || "Frontend developer"}
-                onValueChange={field.onChange}
-                className="flex flex-col space-x-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Frontend developer" id="r1" />
-                  <Label type={"radio"} htmlFor="r1">
-                    Frontend developer
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Backend developer" id="r2" />
-                  <Label type={"radio"} htmlFor="r2">
-                    Backend developer
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Designer" id="r3" />
-                  <Label type={"radio"} htmlFor="r3">
-                    Designer
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="QA" id="r4" />
-                  <Label type={"radio"} htmlFor="r4">
-                    QA
-                  </Label>
-                </div>
-              </RadioGroup>
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <RadioGroup
+                  value={field.value || positionsData?.positions[0].id}
+                  onValueChange={field.onChange}
+                  className="flex flex-col space-x-4"
+                >
+                  {positionsData?.positions.map((position) => (
+                    <div
+                      key={position.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <RadioGroupItem value={position.id} id={position.id} />
+                      <Label
+                        className={"ml-1"}
+                        type={"radio"}
+                        htmlFor={position.id}
+                      >
+                        {position.name}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="profilePicture"
+          name="photo"
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Profile Picture</FormLabel>
+            <FormItem className="w-full -mt-1">
               <FormControl>
                 <Input
                   type="file"
@@ -198,9 +194,11 @@ const SignUp = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={!form.formState.isValid}>
-          Submit
-        </Button>
+        {isPending ? (
+          <Loader />
+        ) : (
+          <SignUpButton type="submit" disabled={!form.formState.isValid} />
+        )}
       </form>
     </Form>
   );

@@ -7,4 +7,7 @@ export const usersService = {
       params: { page, count },
     });
   },
+  getPositions: async () => {
+    return apiClient.get(endpoints.users.getPositions());
+  },
 };

@@ -31,7 +31,7 @@ function Input({
               className
             )}
           >
-            <div className="text-black px-3 rounded-l-[4px] h-[54px] border flex items-center justify-center">
+            <div className="text-black px-3.5 mr-1 rounded-l-[4px] h-[54px] border flex items-center justify-center">
               Upload
             </div>
             {fileName || "Upload your photo"}
@@ -63,7 +63,7 @@ function Input({
       {label && type !== "file" && (
         <label
           className={cn(
-            `absolute left-5 top-1/2 transform -translate-y-1/2 bg-[#F8F8F8] px-1 transition-all pointer-events-none 
+            `absolute left-3 top-1/2 transform -translate-y-1/2 bg-[#F8F8F8] px-1 transition-all pointer-events-none 
           peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] 
           peer-focus:top-[-2px] peer-focus:text-xs peer-focus:translate-y-[-50%]`,
             ariaInvalid

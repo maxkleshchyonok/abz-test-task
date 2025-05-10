@@ -2,16 +2,31 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { useGetUsers } from "@/app/hooks/useGetUsers";
+import { useGetUsers } from "@/app/hooks";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import photoCover from "/public/photo-cover.png";
+import { Loader } from "@/app/icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-const UserCards = () => {
+const UserCards = ({ reload }) => {
   const [page, setPage] = useState(1);
-  const { data: usersData = [] } = useGetUsers({ page, count: 6 });
+  const { data: usersData = [], isLoading } = useGetUsers({ page, count: 6 });
   const [users, setUsers] = useState([]);
+  console.log(usersData);
+
+  useEffect(() => {
+    if (reload) {
+      setPage(1);
+      setUsers([]);
+    }
+  }, [reload]);
 
   useEffect(() => {
     if (!usersData || !usersData.users) {
@@ -26,47 +41,56 @@ const UserCards = () => {
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-4">
-      {users.map((user) => (
-        <Card
-          key={user.id}
-          className={
-            "flex flex-col items-center justify-center sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1rem)]"
-          }
-        >
-          <CardHeader
-            className={"w-full flex flex-col items-center justify-center"}
-          >
-            <Avatar>
-              <AvatarImage src={user.photo} />
-              <AvatarFallback>
-                <Image src={photoCover} alt="Photo cover" />
-              </AvatarFallback>
-            </Avatar>
-
-            <h3 className="text-center w-full overflow-hidden text-ellipsis whitespace-nowrap">
-              {user.name}
-            </h3>
-          </CardHeader>
-
-          <CardContent
+    <div className="flex flex-col justify-center items-center gap-13 lg:px-8 xl:px-0">
+      <div className="flex flex-wrap justify-center gap-5 md:gap-4 lg:gap-7">
+        {users.map((user) => (
+          <Card
+            key={user.id}
             className={
-              "w-full flex flex-col items-center justify-center overflow-hidden"
+              "flex flex-col items-center justify-center " +
+              "w-[95%] max-w-[370px] sm:w-[calc(50%-1rem)] sm:min-w-[282px] sm:max-w-[344px] " +
+              "lg:w-[calc(31.333%-1rem)] lg:min-w-[282px] lg:max-w-[370px] 2xl:w-[370px]"
             }
           >
-            {[user.position, user.email, user.phone].map((el, index) => (
-              <h3
-                key={index}
-                className="text-center w-full overflow-hidden text-ellipsis whitespace-nowrap"
-              >
-                {el}
-              </h3>
-            ))}
-          </CardContent>
-        </Card>
-      ))}
+            <CardHeader
+              className={"w-full flex flex-col items-center justify-center"}
+            >
+              <Avatar>
+                <AvatarImage src={user.photo} />
+                <AvatarFallback>
+                  <Image src={photoCover} alt="Photo cover" />
+                </AvatarFallback>
+              </Avatar>
+            </CardHeader>
+            <h3
+              className={`mt-4 text-center w-[90%] overflow-hidden text-ellipsis whitespace-nowrap`}
+            >
+              {user.name}
+            </h3>
 
-      <Button onClick={handleShowMore}>Show more</Button>
+            <CardContent
+              className={
+                "w-full flex flex-col items-center justify-center overflow-hidden"
+              }
+            >
+              {[user.position, user.email, user.phone].map((el, index) => (
+                <h3
+                  key={index}
+                  className="text-center w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                >
+                  {el}
+                </h3>
+              ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      {usersData?.page !== usersData?.total_pages && (
+        <Button className={"w-[120px]"} onClick={handleShowMore}>
+          Show more
+        </Button>
+      )}
+      {isLoading && <Loader />}
     </div>
   );
 };

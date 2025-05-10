@@ -13,7 +13,16 @@ module.exports = {
         hover: "#FFE302",
         disabled: "#B4B4B4",
       },
+      animation: {
+        rotation: "rotation 1s linear infinite",
+      },
+    },
+    keyframes: {
+      rotation: {
+        "0%": { transform: "rotate(0deg)", transformOrigin: "center" },
+        "100%": { transform: "rotate(360deg)", transformOrigin: "center" },
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/line-clamp")],
 };

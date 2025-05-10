@@ -43,9 +43,9 @@ export const apiClient = {
     }
   },
 
-  post: async (endpoint, data) => {
+  post: async (endpoint, data, options = {}) => {
     try {
-      return await axiosInstance.post(endpoint, data);
+      return await axiosInstance.post(endpoint, data, options);
     } catch (error) {
       throw error;
     }

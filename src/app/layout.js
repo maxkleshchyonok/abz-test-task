@@ -1,6 +1,5 @@
 import { Nunito } from "next/font/google";
 import "./globals.css";
-import Header from "./components/header/Header";
 import { ReactQueryProvider } from "./providers";
 
 const nunito = Nunito({
@@ -21,7 +20,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${nunito.variable} bg-[#F8F8F8] pb-20 antialiased`}>
         <ReactQueryProvider>
-          <Header />
           <div>{children}</div>
         </ReactQueryProvider>
       </body>
