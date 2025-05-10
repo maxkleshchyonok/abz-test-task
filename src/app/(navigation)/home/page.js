@@ -51,7 +51,7 @@ const Home = () => {
               the world of Front-End Development keeps evolving.
             </p>
 
-            <SignUpButton className={"text-black"} />
+            <SignUpButton onClick={scrollToSignUp} className={"text-black"} />
           </div>
         </div>
 
