@@ -31,7 +31,7 @@ const Home = () => {
           className={`
           lg:max-w-[1170px] relative mx-auto w-full h-[500px] lg:h-[650px]
           flex flex-col items-center justify-center text-white
-          bg-[url('/backgrounds/main-background.jpeg')] bg-no-repeat
+          bg-[url('/backgrounds/main-background.webp')] bg-no-repeat
           bg-[length:350%_840px] bg-[position:left_50%_bottom_3%]
           lg:bg-[length:219%_auto] lg:bg-[position:left_50%_bottom_20%]
           md:bg-[length:180%_auto] md:bg-[position:left_75%_bottom_10%]
